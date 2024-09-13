@@ -1,6 +1,4 @@
-# htl - Hack To Learn
+# HTL - Hack To Learn
 
-- [ ] docker-compose file
-- [x] nextjs setup
-- [ ] dockerfiles
-
+Is a learn platform for students to learn and try out simple hacking techniques like SQL Injection, Deserialization, etc.
+It features HackTheBox like challenges to solve and learn from.
