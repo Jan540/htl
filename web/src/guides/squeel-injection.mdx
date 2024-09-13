@@ -1,0 +1,97 @@
+import Question from "../components/question";
+
+# SQL-Injection Lab 🕵️‍♂️💻
+
+In this hands-on lab, you're diving into the world of a Student Grades Platform – a web app that stores and displays student grades. It is possible to exploit so called SQL-Injection. To learn what SQL-Injection is and how to exploit it you will have a couple of objectives.
+
+## Lab Objectives 🎯
+
+1. **Login without authorization:**: Log in as a user without knowing the password.
+2. **Steal user data:**: Steal the data of a specific user you want to hack.
+3. **Give a master hacker access to an account:** Give a hacker access to an account of your choice.
+
+## Instructions 📝
+
+# The Exciting Login Page Adventure 🚀
+
+Greetings, tech adventurers at HTL Wien West! Get ready for an exhilarating mission: unraveling the mysteries of the Homework Management System (HMS) through the magical world of its guardian, the login page.
+
+## Chapter 1: Logging In
+
+Your mission's first phase is all about understanding the login page. Imagine it as the protector of a digital party, where the username and password fields are its loyal companions. Your golden ticket to the exclusive HMS club is the correct username-password duo.
+
+How do you think such a login is implemented on the server? What happens when you enter your username and password? Have a look at the code:
+
+```python
+result = fetch_data_from_db('SELECT username, password FROM users WHERE username = "' + username + '" AND password = "' + hashed_password + '" ;')
+```
+
+Do you notice anything vulnurable?
+
+### What can be exploited?
+
+Do you know how Comments are written in SQL? They start with `--` and everything after that is ignored. Could you use this to your advantage?
+
+What does this SQL Command do?
+
+```sql
+SELECT username, password FROM users WHERE username = "user@account.com" --" AND password = "xxx" ;
+```
+
+<Question questionNr={1} />
+
+Nice work! It seems you understand the basics of how this works.
+
+### Time for your ninja hacker move 🥷
+
+In our current scenario we know that our current teacher is `leo.borek@htlwildwest.at`. What would you need to write into the username field to log in as him?
+
+<Question questionNr={2} />
+
+Now execute your ninja move 🥷 on the right side of your screen and... voilà! You've successfully logged in as `leo.borek@htlwildwest.at`. Picture your victory dance 💃 as you transform into the mighty leo.borek👨‍🏫!
+
+## Chapter 2: Stealing the User Data
+
+You can see that on this page there is a search bar. This search bar is used to search for homework. The search term is used to search for the subject of the homework.
+
+The output of the search is displayed in a table.
+
+Can we use this search bar to output the data of the users table instead of the homework table?
+
+This is how the server handles the code underneath:
+
+```python
+result = fetch_data_from_db('SELECT subject, description,due_date FROM homework WHERE subject LIKE "%' + search_term + '%"')
+```
+
+Do you remember the mighty gruber's class on sql unions?
+
+We could try to use a union on the users table. Lest try to get the role, username and password of the users table. The Server should use this query:
+
+```
+SELECT subject, description,due_date FROM homework WHERE subject LIKE "%math" UNION SELECT role,username,password FROM users --%"
+```
+
+What do you need to enter to get the server to use this query?
+
+<Question questionNr={3} />
+
+### Time for your ninja hacker move 🥷 _Part 2_ 🎬
+
+Enter the search term into the search bar and execute your ninja move 🥷 on the right side of your screen. You will see the data of the users table displayed in the table below.
+
+## Get beo.lorek hacked
+
+The next steps should be taken over by the premium pentester Rashia Eisi.
+
+To hack the system, he needs the password hash of the user `leo.borek`. Can you help him out?
+
+<Question questionNr={4} />
+
+## Let's fix it!
+
+Now your expertise 🧠 is needed to fix the vulnerability. How can you prevent the user from injecting SQL commands? 🤔
+
+Think of some ideas and submit the Document to google classroom. Also add screenshots with the correctly awnsered questions and your google username visible to get your points.
+
+Happy hacking, stay safe! 🔒🛡️

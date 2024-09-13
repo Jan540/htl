@@ -1,0 +1,63 @@
+# Command Injection Lab 🤖💉
+
+In this lab we will dive into the world of Command Injection. You will have to exploit a web application that is vulnerable to Command Injection. This website pings an address for you. To learn what Command Injection is and how to exploit it you will have a couple of objectives.
+
+## Lab Objectives 🎯
+
+1. **Ping a website:**: Ping a website of your choice.
+2. **get out of the ping command:**: Execute a command that is not a ping command.
+3. **Steal the data:**: Steal data from the server.
+
+## Instructions 📝
+
+# The Exciting Ping Page Adventure 🚀
+
+Greetings, tech adventurers at HTL Wien West! Get ready for an exhilarating mission: unraveling the mysteries of the Ping page.
+
+## Chapter 1: Pinging
+
+Your mission's first phase is all about understanding the ping page. Let's try to use it like normal in this first step.
+
+Try to ping the website `htlwienwest.at` and see what happens.
+
+Does the output look familiar to you? It seems this is the exact same output as the terminal ping command. Could you use this to your advantage?
+
+Have a look how the server implements this application:
+
+```python
+command = "ping -c " + count + " " + ip
+res = subprocess.run(command, capture_output=True, shell=True)
+out = res.stdout
+```
+
+Do you notice anything vulnurable?
+
+## Chapter 2: Command Injection
+
+In this second chapter you will have to insert a command that is not a ping command.
+
+Do you remember the mighty gruber's bash class?
+
+Nice work! It seems you understand the basics of how this works.
+
+Great job! You have successfully exploited a Command Injection vulnerability. You can now execute any command on the server.
+
+## Chapter 3: Stealing the data 🥷
+
+Let's try to see if there are some files on the Server. Try to find all files in the current directory. There should be a file that looks like it is of some value.
+
+You found the file. Let's try to read the content of this file. What command do you have to enter into the address field to read the content of the file?
+
+Do you remember the mighty gruber's bash class? How can we read the content of a file in the bash shell?
+
+Good Job! Now we need to pass the secret content to out master hacker again.
+
+Congratulations! You have successfully exploited the Command Injection vulnerability and stole the secret data from the server. You are now a master hacker.
+
+## Let's fix it 🛠️
+
+Now your expertise 🧠 is needed to fix the vulnerability. How can you prevent the user from injecting commands? 🤔
+
+Think of some ideas and submit the Document to google classroom. Also add screenshots with the correctly awnsered questions and your google username visible to get your points.
+
+Happy hacking, stay safe! 🔒🛡️

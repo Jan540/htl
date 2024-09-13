@@ -1,0 +1,4 @@
+(executable
+ (public_name real_api)
+ (name main)
+ (libraries real_api))

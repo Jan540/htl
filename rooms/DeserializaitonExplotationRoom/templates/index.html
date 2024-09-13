@@ -1,0 +1,100 @@
+<!-- templates/index_with_subject_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Student Grades Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        dt {
+            margin-top: 20px;
+            color: #2b6cb0;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <script>
+        function encodeAndSubmitForm() {
+            var student = document.getElementById('student').value;
+            var subject = document.getElementById('subject').value;
+            var grade = document.getElementById('grade').value;
+
+            var encodedStudent = btoa(unescape(encodeURIComponent(student)));
+
+            document.getElementById('student').value = encodedStudent;
+
+            document.getElementById('addGradeForm').submit();
+        }    
+    </script>
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-semibold mb-4">Wild West Student Grades Platform</h1>
+
+        {% if success_message %}
+        <div class="bg-green-200 text-green-800 p-2 mb-4">{{ success_message }}</div>
+        {% endif %}
+        {% if error_message %}
+        <div class="bg-red-200 text-red-800 p-2 mb-4">{{ error_message }}</div>
+        {% endif %}
+
+        <form id="addGradeForm" action="/add_grade" method="post" class="mb-4">
+            <label for="student" class="block text-sm font-medium text-gray-600">Student Name:</label>
+            <input type="text" id="student" name="student" required
+                class="mt-1 p-2 border border-gray-300 rounded-md w-full">
+
+            <label for="subject" class="block mt-2 text-sm font-medium text-gray-600">Subject:</label>
+            <div class="relative mt-1">
+                <select id="subject" name="subject" required
+                    class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded-md leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
+                    {% for subject in subjects %}
+                    <option value="{{ subject }}">{{ subject }}</option>
+                    {% endfor %}
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <svg class="fill-current h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20">
+                        <path d="M10 12l-8 8-1-1 8-8 8 8-1 1-7-7z" />
+                    </svg>
+                </div>
+            </div>
+
+            <label for="grade" class="block mt-2 text-sm font-medium text-gray-600">Grade:</label>
+            <input type="text" id="grade" name="grade" required
+                class="mt-1 p-2 border border-gray-300 rounded-md w-full">
+
+            <button type="button" onclick="encodeAndSubmitForm()" class="mt-4 bg-blue-500 text-white p-2 rounded-md">Add
+                Grade</button>
+        </form>
+
+        <div>
+            <h2 class="text-xl font-semibold mb-2">Student Grades:</h2>
+            <dl>
+                {% for student, data in students.items() %}
+                <dt class="text-lg font-semibold mb-2">{{ student }}</dt>
+                <dd>
+                    <table class="min-w-full bg-white border border-gray-300">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b">Subject</th>
+                                <th class="py-2 px-4 border-b">Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for subject, grade in data.grades.items() %}
+                            <tr>
+                                <td class="py-2 px-4 border-b">{{ subject }}</td>
+                                <td class="py-2 px-4 border-b">{{ grade }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </dd>
+                {% endfor %}
+            </dl>
+        </div>
+    </div>
+</body>
+</html>

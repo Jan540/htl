@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Address Pinger</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Add custom styles for the result container */
+        #resultContainer {
+            max-width: 100%; /* Set a maximum width for the result container */
+            max-height: 300px; /* Set a maximum height for the result container */
+            overflow: auto;   /* Enable scrolling when content overflows */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+
+    <div class="bg-white p-10 rounded-lg shadow-md w-full sm:w-96">
+        <h1 class="text-3xl font-semibold mb-6 text-center">IP Address Pinger</h1>
+
+        <!-- Form to input IP addresses -->
+        <form id="pingForm">
+            <div class="mb-4">
+                <label for="ipAddresses" class="block text-gray-600">IP Addresses (comma-separated)</label>
+                <input type="text" id="ipAddresses" name="ipAddresses" placeholder="Enter IP addresses" class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
+            </div>
+            <div class="mb-4">
+                <label for="numRequests" class="block text-gray-600">Number of Requests</label>
+                <input type="number" id="numRequests" name="numRequests" placeholder="Enter number of requests" class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
+            </div>
+            <button type="button" onclick="pingIpAddresses()" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Ping IP Addresses</button>
+        </form>
+        
+ <!-- Result container to display the ping results -->
+ <div id="resultContainer" class="mt-4 text-left bg-gray-200 p-4 rounded-md whitespace-pre-wrap"></div>
+    </div>
+    <script>
+        var API_PORT = "{{ api_port }}";
+        var API_HOSTNAME = "{{ api_hostname }}";
+    </script>
+    <script>
+        // Function to ping multiple IP addresses
+        function pingIpAddresses() {
+            const ipAddresses = document.getElementById('ipAddresses').value.split(',');
+            const numRequests = document.getElementById('numRequests').value || 4;
+            const resultContainer = document.getElementById('resultContainer');
+
+            // Clear previous results
+            resultContainer.innerHTML = '';
+
+            // Loop through each IP address
+            ipAddresses.forEach(ipAddress => {
+                // Use fetch to ping the IP address
+                fetch(`/api/v1/ping?ip=${ipAddress}&count=${numRequests}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Display the results
+                        const resultMessage = data.status === 'success' ? `Successfully pinged ${ipAddress}.` : `Error pinging ${ipAddress}.`;
+                        const commandOutput = `<p><strong>${resultMessage}</strong></p><pre>${atob(data.output)}</pre>`;
+                        resultContainer.innerHTML += `<div class="mt-4">${commandOutput}</div>`;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        resultContainer.innerHTML += `<p>Error pinging ${ipAddress}.</p>`;
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
